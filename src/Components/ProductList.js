@@ -18,11 +18,13 @@ function ProductList() {
   const [showList, setShowList] = useState(true);
   const [data, setData] = useState(Data);
   const [currentPage, setCurrentPage] = useState(1);
+  const [editData, setEditData] = useState([]);
   const [recordsPerPage] = useState(10);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(data.length / recordsPerPage);
+
   let inputHandler = (e) => {
     var lowerCase = e.target.value.toLowerCase();
     setInputText(lowerCase);
@@ -38,7 +40,8 @@ function ProductList() {
     }
   });
 
-  const editHandler = () => {
+  const editHandler = (e, i) => {
+    setEditData(e, i);
     setEdit(true);
     setShowList(false);
   };
@@ -166,7 +169,7 @@ function ProductList() {
                             justifyContent: "center",
                           }}
                         >
-                          <Button onClick={editHandler}>
+                          <Button onClick={() => editHandler(item, i)}>
                             <EditIcon />
                           </Button>
                         </td>
@@ -194,8 +197,13 @@ function ProductList() {
           </div>
         </>
       )}
+
       {edit === true ? (
         <EditProductList
+          setData={setData}
+          setEditData={setEditData}
+          currentRecords={currentRecords}
+          editData={editData}
           setEdit={setEdit}
           setShowList={setShowList}
           edit={edit}

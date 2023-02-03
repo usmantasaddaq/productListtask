@@ -6,51 +6,101 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import "./ProductListStyle.css";
 
-const EditProductList = ({ edit, setEdit, setShowList }) => {
-  const [name, setName] = useState("");
-  const [color, setColor] = useState("");
-  const [type, setType] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
+const EditProductList = ({
+  editData,
+  currentRecords,
+  setData,
+  edit,
+  setEdit,
+  setShowList,
+}) => {
+  const [update, setUpdate] = useState({
+    name: "",
+    color: "",
+    type: "",
+    price: "",
+    description: "",
+  });
   const [id, setId] = useState("");
   const [error, setError] = useState("");
   const [errortype, setErrorType] = useState("");
-  const handleChange = (event) => {
-    let value = event.target.value;
-    if (isNaN(value) || value < 0) {
-      setError("Please enter a valid number greater than or equal to 0.");
-    } else {
-      setError("");
-    }
+
+  const handlChangeName = (e) => {
+    setUpdate({
+      ...update,
+      name: e.target.value,
+    });
   };
-  const handleChangeText = (event) => {
-    let value = event.target.value;
+
+  const handlChangeColor = (e) => {
+    let value = e.target.value;
     if (value.length > 56) {
       setErrorType("Input must be less than 56 characters");
     } else {
       setErrorType("");
     }
+
+    setUpdate({
+      ...update,
+      color: value,
+    });
   };
 
-  var index = Data.map((e) => e.id).indexOf(id);
+  const handlChangeType = (e) => {
+    let value = e.target.value;
+    if (value.length > 56) {
+      setErrorType("Input must be less than 56 characters");
+    } else {
+      setErrorType("");
+    }
+    setUpdate({
+      ...update,
+      type: value,
+    });
+  };
+  const handlChangePrice = (e) => {
+    let value = e.target.value;
+    if (isNaN(value) || value < 0) {
+      setError("Please enter a valid number greater than or equal to 0.");
+    } else {
+      setError("");
+    }
+    setUpdate({
+      ...update,
+      price: value,
+    });
+  };
+
+  const handlChangeDescription = (e) => {
+    let value = e.target.value;
+    if (value.length > 56) {
+      setErrorType("Input must be less than 56 characters");
+    } else {
+      setErrorType("");
+    }
+    setUpdate({
+      ...update,
+      description: value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // let a = Data[index];
-    // a.name = name;
-    // a.color = color;
-    // a.type = type;
-    // a.price = price;
-    // a.description = description;
+    setShowList(true);
+    setEdit(false);
+    const index = currentRecords.find((o) => o.id === editData.id);
+    currentRecords.splice(index, 1, update);
+    setData(currentRecords);
   };
+
   useEffect(() => {
-    setName(localStorage.getItem("name"));
-    setColor(localStorage.getItem("color"));
-    setType(localStorage.getItem("type"));
-    setPrice(localStorage.getItem("price"));
-    setDescription(localStorage.getItem("description"));
+    setUpdate(localStorage.getItem("name"));
+    setUpdate(localStorage.getItem("color"));
+    setUpdate(localStorage.getItem("type"));
+    setUpdate(localStorage.getItem("price"));
+    setUpdate(localStorage.getItem("description"));
     setId(localStorage.getItem("id"));
-  }, [Data]);
+  }, []);
 
   return (
     <>
@@ -69,17 +119,17 @@ const EditProductList = ({ edit, setEdit, setShowList }) => {
               <TextField
                 type="text"
                 placeholder="Enter name"
-                value={name}
+                defaultValue={editData.name}
                 required
-                onChange={(e) => setName(e.target.value)}
+                onChange={handlChangeName}
               />
               <TextField
                 type="text"
                 placeholder="Enter color"
-                value={color}
+                defaultValue={editData.color}
                 required
                 maxlength="56"
-                onChange={((e) => setColor(e.target.value), handleChangeText)}
+                onChange={handlChangeColor}
               />
               <p
                 style={{
@@ -95,17 +145,17 @@ const EditProductList = ({ edit, setEdit, setShowList }) => {
               <TextField
                 type="text"
                 placeholder="Enter Type"
-                value={type}
+                defaultValue={editData.type}
                 required
                 maxlength="56"
-                onChange={((e) => setType(e.target.value), handleChangeText)}
+                onChange={handlChangeType}
               />
               <TextField
                 type="number"
                 placeholder="Enter Price"
-                value={price}
+                defaultValue={editData.price}
                 required
-                onChange={((e) => setPrice(e.target.value), handleChange)}
+                onChange={handlChangePrice}
               />
               {error && (
                 <p
@@ -126,20 +176,15 @@ const EditProductList = ({ edit, setEdit, setShowList }) => {
                 label="Description"
                 style={{ width: "600px", marginTop: "5%", marginBottom: "5%" }}
                 type="textarea"
-                value={description}
+                defaultValue={editData.description}
                 required
-                maxlength="56"
-                onChange={
-                  ((e) => setDescription(e.target.value), handleChangeText)
-                }
+                onChange={handlChangeDescription}
               />
               <br></br>
               <Button
                 variant="contained"
                 onClick={(e) => {
                   handleSubmit(e);
-                  setShowList(true);
-                  setEdit(false);
                 }}
                 type="submit"
               >

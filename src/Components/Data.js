@@ -135,6 +135,7 @@ const Data = [
     description: "Meet Lilah, your new go-to warm weather bootie.",
     color: "black",
     price: 250.9,
+    
   },
   {
     id: "123897917321252",
